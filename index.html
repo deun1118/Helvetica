@@ -8,11 +8,8 @@
     <style>
         /* ----------------------------------------------------------------
            [1] BRAND THEME & GLOBAL STYLES
-           아티스트의 미니멀한 무드를 위해 Helvetica 폰트와 블랙/화이트 톤을 사용합니다.
-           시즌별 배경 이미지는 최하단의 CSS 변수(--seasonal-bg)에서 쉽게 변경할 수 있습니다.
         ---------------------------------------------------------------- */
         :root {
-            /* 💡 여기에 시즌별 배경 이미지 주소를 넣으시면 사이트 전체 배경이 바뀝니다 */
             --seasonal-bg: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
             --font-brand: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             --color-bg: #000000;
@@ -38,7 +35,7 @@
             height: 100vh;
         }
 
-        ::-webkit-scrollbar { display: none; } /* 스크롤바 숨김 */
+        ::-webkit-scrollbar { display: none; }
 
         /* ----------------------------------------------------------------
            [2] SEASONAL BACKGROUND
@@ -53,28 +50,46 @@
         }
 
         /* ----------------------------------------------------------------
-           [3] PERSISTENT NAVIGATION (4 Corners) - 이미지 탭으로 수정됨
+           [3] PERSISTENT NAVIGATION (4 Corners) - 크기 조절 버그 수정 버전
         ---------------------------------------------------------------- */
         .corner-nav {
-            position: fixed; cursor: pointer; z-index: 100; padding: 40px;
+            position: fixed; 
+            cursor: pointer; 
+            z-index: 100; 
+            /* 이미지 배치와 클릭 영역 확보를 위해 여백 스타일을 최적화했습니다 */
+            padding: 20px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .corner-nav img {
-            width: 512px; /* 💡 아이콘 크기는 여기서 조절하세요 */
-            height: 512px;
+            /* 💡 여기서 원하시는 크기로 마음껏 조절해 보세요! */
+            width: 120px; 
+            height: 120px;
+            
             object-fit: contain;
-            opacity: 0.5; /* 평소엔 반투명하게 (기존 글자색과 비슷하게) */
+            opacity: 0.5; 
             transition: var(--transition-smooth);
         }
-        .corner-nav:hover img { 
-            opacity: 1; /* 마우스 올리면 선명하게 */
-            transform: scale(1.1); /* 살짝 커지는 효과 */
-        }
-        .top-left { top: 0; left: 0; }
-        .top-right { top: 0; right: 0; }
-        .bottom-left { bottom: 0; left: 0; }
-        .bottom-right { bottom: 0; right: 0; }
 
-        .corner-nav.active-tab img { opacity: 1; }
+        /* 마우스 올렸을 때 효과 */
+        .corner-nav:hover img { 
+            opacity: 1; 
+            transform: scale(1.05); 
+        }
+
+        /* 모서리 위치 정렬 (화면 가장자리에 너무 붙지 않게 살짝 여백 부여) */
+        .top-left { top: 15px; left: 15px; }
+        .top-right { top: 15px; right: 15px; }
+        .bottom-left { bottom: 15px; left: 15px; }
+        .bottom-right { bottom: 15px; right: 15px; }
+
+        /* 활성화된 탭 스타일 */
+        .corner-nav.active-tab img { 
+            opacity: 1; 
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
 
         /* 뒤로가기 버튼 */
         .home-btn {
@@ -307,7 +322,7 @@
             const pages = document.querySelectorAll(".page");
             const homeBtn = document.getElementById("btn-home");
             
-            // 페이지 전환 로직
+            // 페이지 전환
             tabs.forEach(tab => {
                 tab.addEventListener("click", () => {
                     const target = `page-${tab.getAttribute("data-target")}`;
@@ -319,7 +334,7 @@
                 });
             });
 
-            // 뒤로가기 버튼
+            // 홈 화면 복귀
             homeBtn.addEventListener("click", () => {
                 pages.forEach(p => p.classList.remove("active"));
                 tabs.forEach(t => t.classList.remove("active-tab"));
@@ -327,7 +342,7 @@
                 homeBtn.classList.remove("visible");
             });
 
-            // 사운드클라우드 모달 로직
+            // 모달 창 제어
             const modal = document.getElementById("music-modal");
             document.getElementById("hero-music-trigger").addEventListener("click", () => modal.classList.add("visible"));
             const closeModal = () => {
@@ -337,7 +352,7 @@
             document.getElementById("close-modal-trigger").addEventListener("click", closeModal);
             modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
 
-            // 마우스 세로 휠을 가로 스크롤로 매핑
+            // 마우스 휠 감도 매핑
             document.querySelectorAll(".scroller-node").forEach(scroller => {
                 scroller.addEventListener("wheel", (e) => {
                     if (e.deltaY !== 0) { e.preventDefault(); scroller.scrollLeft += e.deltaY * 1.2; }
