@@ -60,7 +60,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition-smooth); /* 부드럽게 사라지는 효과 반영 */
+            transition: opacity 0.4s ease, visibility 0.4s ease; /* 투명도와 가시성 동시 제어 */
+            visibility: visible;
+            opacity: 1;
         }
 
         .corner-nav img {
@@ -83,10 +85,11 @@
         .bottom-left { bottom: 15px; left: 15px; }
         .bottom-right { bottom: 15px; right: 15px; }
 
-        /* 💡 서브 페이지 입장 시 탭을 완전히 숨기는 스타일 */
+        /* 💡 서브 페이지 입장 시 탭을 완벽하게 숨기고 공간을 없앱니다 */
         .corner-nav.hidden {
-            opacity: 0;
-            pointer-events: none; /* 숨겨진 동안에는 클릭되지 않도록 차단 */
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
         /* 뒤로가기 버튼 (Close View) */
@@ -94,9 +97,10 @@
             position: fixed; top: 40px; left: 50%;
             transform: translateX(-50%) translateY(-100px);
             font-size: 11px; letter-spacing: 3px; color: var(--color-dim);
-            cursor: pointer; z-index: 101; opacity: 0; /* 탭 위에 보이도록 z-index 수정 */
+            cursor: pointer; z-index: 105; opacity: 0;
             transition: var(--transition-smooth);
             border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px;
+            background-color: rgba(0,0,0,0.6);
         }
         .home-btn.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
         .home-btn:hover { color: var(--color-text); border-color: var(--color-text); }
@@ -328,7 +332,7 @@
                     pages.forEach(p => p.classList.remove("active"));
                     document.getElementById(target).classList.add("active");
                     
-                    // 💡 페이지 진입 시 모든 모서리 탭 가리기
+                    // 💡 강제 및 확실하게 탭 가리기 (.hidden 추가)
                     tabs.forEach(t => t.classList.add("hidden"));
                     
                     homeBtn.classList.add("visible");
@@ -340,7 +344,7 @@
                 pages.forEach(p => p.classList.remove("active"));
                 document.getElementById("page-home").classList.add("active");
                 
-                // 💡 홈으로 돌아오면 모든 모서리 탭 다시 보여주기
+                // 💡 홈으로 오면 가리기 해제 (.hidden 제거)
                 tabs.forEach(t => t.classList.remove("hidden"));
                 
                 homeBtn.classList.remove("visible");
