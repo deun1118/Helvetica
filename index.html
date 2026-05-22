@@ -6,7 +6,13 @@
     <title>HELVETICA ARCHIVE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        /* ----------------------------------------------------------------
+           [1] BRAND THEME & GLOBAL STYLES
+           아티스트의 미니멀한 무드를 위해 Helvetica 폰트와 블랙/화이트 톤을 사용합니다.
+           시즌별 배경 이미지는 최하단의 CSS 변수(--seasonal-bg)에서 쉽게 변경할 수 있습니다.
+        ---------------------------------------------------------------- */
         :root {
+            /* 💡 여기에 시즌별 배경 이미지 주소를 넣으시면 사이트 전체 배경이 바뀝니다 */
             --seasonal-bg: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
             --font-brand: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             --color-bg: #000000;
@@ -16,37 +22,321 @@
             --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-        body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-brand); overflow: hidden; width: 100vw; height: 100vh; }
-        ::-webkit-scrollbar { display: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
 
-        .site-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: var(--seasonal-bg); background-size: cover; background-position: center; filter: brightness(0.25) contrast(1.1); z-index: 1; transition: var(--transition-smooth); }
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-brand);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
 
-        /* [아이콘 탭 스타일] */
-        .corner-nav { position: fixed; z-index: 100; padding: 40px; cursor: pointer; transition: var(--transition-smooth); }
-        .nav-icon { width: 40px; height: 40px; object-fit: contain; opacity: 0.5; transition: var(--transition-smooth); filter: invert(1); }
-        .corner-nav:hover .nav-icon { opacity: 1; transform: scale(1.1); }
+        ::-webkit-scrollbar { display: none; } /* 스크롤바 숨김 */
+
+        /* ----------------------------------------------------------------
+           [2] SEASONAL BACKGROUND
+        ---------------------------------------------------------------- */
+        .site-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: var(--seasonal-bg);
+            background-size: cover; background-position: center;
+            filter: brightness(0.25) contrast(1.1);
+            z-index: 1; transition: var(--transition-smooth);
+        }
+
+        /* ----------------------------------------------------------------
+           [3] PERSISTENT NAVIGATION (4 Corners)
+        ---------------------------------------------------------------- */
+        .corner-nav {
+            position: fixed; font-size: 13px; font-weight: 700;
+            letter-spacing: 4px; color: var(--color-dim);
+            cursor: pointer; z-index: 100; padding: 40px;
+            transition: var(--transition-smooth); text-transform: uppercase;
+        }
+        .corner-nav:hover { color: var(--color-text); letter-spacing: 6px; }
         .top-left { top: 0; left: 0; }
         .top-right { top: 0; right: 0; }
         .bottom-left { bottom: 0; left: 0; }
         .bottom-right { bottom: 0; right: 0; }
 
-        /* 기존의 페이지 전환 로직 등은 유지 */
+        .corner-nav.active-tab { color: var(--color-text); border-bottom: 1px solid var(--color-text); padding-bottom: 5px; }
+
+        /* 뒤로가기 버튼 */
+        .home-btn {
+            position: fixed; top: 40px; left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            font-size: 11px; letter-spacing: 3px; color: var(--color-dim);
+            cursor: pointer; z-index: 100; opacity: 0;
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px;
+        }
+        .home-btn.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .home-btn:hover { color: var(--color-text); border-color: var(--color-text); }
+
+        /* ----------------------------------------------------------------
+           [4] PAGES ARCHITECTURE
+        ---------------------------------------------------------------- */
         .page-container { position: relative; width: 100%; height: 100%; z-index: 10; }
-        .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transform: scale(1.03); transition: opacity 0.8s, transform 0.8s, visibility 0.8s; padding: 120px 80px; overflow: hidden; }
+        .page {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; visibility: hidden; transform: scale(1.03);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s, visibility 0.8s;
+            padding: 120px 80px; overflow: hidden;
+        }
         .page.active { opacity: 1; visibility: visible; transform: scale(1); }
 
-        /* (이하 기존의 Home, Illust, Music, Sculpture, Store, Modal, JS 부분 동일) */
-        /* ...코드 생략(위와 동일하게 유지) ... */
+        /* ----------------------------------------------------------------
+           [5] HOME PAGE
+        ---------------------------------------------------------------- */
+        #page-home { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .album-art-frame {
+            width: 340px; height: 340px; background: #111; border: 1px solid var(--color-border);
+            overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            transition: var(--transition-smooth); position: relative; cursor: pointer;
+        }
+        .album-art-frame img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-smooth); }
+        .album-art-frame:hover { transform: scale(1.03); border-color: rgba(255,255,255,0.4); }
+        .album-art-frame:hover img { filter: brightness(0.8); }
+        
+        .play-overlay { position: absolute; top:0; left:0; width:100%; height:100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); opacity: 0; transition: var(--transition-smooth); }
+        .album-art-frame:hover .play-overlay { opacity: 1; }
+        .play-overlay i { font-size: 32px; color: #fff; }
+
+        .hero-song-title { margin-top: 25px; font-size: 18px; font-weight: 700; letter-spacing: 3px; }
+        .hero-song-sub { margin-top: 6px; font-size: 11px; letter-spacing: 2px; color: var(--color-dim); }
+
+        .social-container { position: absolute; bottom: 50px; display: flex; gap: 35px; }
+        .social-link { color: var(--color-dim); font-size: 18px; transition: var(--transition-smooth); text-decoration: none; }
+        .social-link:hover { color: var(--color-text); transform: scale(1.15); }
+
+        /* ----------------------------------------------------------------
+           [6] ILLUST PAGE
+        ---------------------------------------------------------------- */
+        .gallery-wrapper { display: flex; width: 100%; height: 100%; align-items: center; }
+        .section-intro { min-width: 350px; padding-right: 60px; }
+        .section-intro h2 { font-size: 40px; margin-bottom: 20px; }
+        .section-intro p { font-size: 14px; color: var(--color-dim); line-height: 1.6; }
+
+        .horizontal-scroller { display: flex; align-items: center; overflow-x: auto; width: 100%; height: 100%; padding-right: 200px; padding-top: 40px; }
+        .museum-card-wrapper { position: relative; margin-right: 60px; display: inline-block; }
+        .museum-card { width: 460px; height: 520px; border: 1px solid var(--color-border); overflow: hidden; position: relative; z-index: 2; transition: var(--transition-smooth); }
+        .museum-card img { width: 100%; height: 100%; object-fit: cover; }
+        .museum-card-wrapper:hover .museum-card { transform: translateY(-30px) scale(0.96); border-color: rgba(255,255,255,0.3); }
+
+        .museum-desc { position: absolute; top: 100%; left: 0; width: 100%; background: #050505; border: 1px solid var(--color-border); border-top: none; padding: 20px; z-index: 1; opacity: 0; transform: translateY(-20px); transition: var(--transition-smooth); }
+        .museum-card-wrapper:hover .museum-desc { opacity: 1; transform: translateY(0); }
+        .museum-desc h4 { font-size: 14px; margin-bottom: 6px; }
+        .museum-desc p { font-size: 12px; color: var(--color-dim); }
+
+        /* ----------------------------------------------------------------
+           [7] MUSIC & SCULPTURE
+        ---------------------------------------------------------------- */
+        .split-layout { display: flex; width: 100%; height: 100%; }
+        .fixed-sidebar { width: 30%; display: flex; flex-direction: column; justify-content: center; padding-right: 40px; border-right: 1px solid var(--color-border); }
+        .fixed-sidebar h2 { font-size: 36px; margin-bottom: 15px; }
+        .fixed-sidebar .meta-info { font-size: 13px; color: var(--color-dim); margin-bottom: 30px; }
+        .track-item { font-size: 13px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; color: var(--color-dim); }
+        .track-item.active-track { color: var(--color-text); font-weight: 700; }
+
+        .itunes-scroller { width: 70%; display: flex; align-items: center; overflow-x: auto; padding-left: 60px; padding-right: 150px; }
+        .itunes-item { min-width: 320px; height: 320px; margin-right: 40px; border: 1px solid var(--color-border); overflow: hidden; transition: var(--transition-smooth); cursor: pointer; }
+        .itunes-item img { width: 100%; height: 100%; object-fit: cover; }
+        .itunes-item:hover { transform: scale(1.03) translateY(-5px); border-color: rgba(255,255,255,0.4); }
+
+        /* ----------------------------------------------------------------
+           [8] STORE
+        ---------------------------------------------------------------- */
+        .store-container { display: flex; width: 100%; height: 100%; margin-top: -20px; }
+        .store-column { width: 33.333%; height: 100%; overflow-y: auto; border-right: 1px solid var(--color-border); padding: 20px 40px 100px 40px; transition: var(--transition-smooth); }
+        .store-column:last-child { border-right: none; }
+        .store-column:hover { background: rgba(255,255,255,0.01); }
+        .column-header { position: sticky; top: 0; background: transparent; padding: 20px 0; font-size: 18px; font-weight: 700; letter-spacing: 4px; margin-bottom: 30px; border-bottom: 1px solid var(--color-border); }
+        .product-card { margin-bottom: 40px; }
+        .product-img-box { width: 100%; height: 280px; border: 1px solid var(--color-border); overflow: hidden; transition: var(--transition-smooth); }
+        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card:hover .product-img-box { border-color: rgba(255,255,255,0.5); transform: translateY(-3px); }
+        .product-info { margin-top: 15px; display: flex; justify-content: space-between; font-size: 13px; }
+        .product-price { color: var(--color-dim); }
+
+        /* ----------------------------------------------------------------
+           [9] MODAL PLAYER
+        ---------------------------------------------------------------- */
+        .sc-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .sc-modal.visible { opacity: 1; visibility: visible; }
+        .sc-modal-content { width: 500px; background: #111; border: 1px solid var(--color-border); padding: 30px; position: relative; }
+        .close-modal-btn { position: absolute; top: -40px; right: 0; color: #fff; font-size: 13px; letter-spacing: 2px; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <div class="site-background"></div>
 
-    <div class="corner-nav top-left" data-target="music"><img src="music.png" class="nav-icon" alt="Music"></div>
-    <div class="corner-nav top-right" data-target="sculpture"><img src="sculpture.png" class="nav-icon" alt="Sculpture"></div>
-    <div class="corner-nav bottom-left" data-target="illust"><img src="illust.png" class="nav-icon" alt="Illust"></div>
-    <div class="corner-nav bottom-right" data-target="store"><img src="store.png" class="nav-icon" alt="Store"></div>
+    <div class="corner-nav top-left" data-target="music">Music</div>
+    <div class="corner-nav top-right" data-target="sculpture">Sculpture</div>
+    <div class="corner-nav bottom-left" data-target="illust">Illust</div>
+    <div class="corner-nav bottom-right" data-target="store">Store</div>
 
-    </body>
+    <div class="home-btn" id="btn-home">Close View</div>
+
+    <div class="page-container">
+        <div class="page active" id="page-home">
+            <div class="hero-album-wrapper" id="hero-music-trigger">
+                <div class="album-art-frame">
+                    <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop">
+                    <div class="play-overlay"><i class="fa-solid fa-play"></i></div>
+                </div>
+                <h3 class="hero-song-title">BRAINSPARK THEME</h3>
+                <p class="hero-song-sub">Recent Release / Click to Play</p>
+            </div>
+            <div class="social-container">
+                <a href="https://www.instagram.com/hlvtcetn/" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://soundcloud.com/4p2ovbtdoh2p" class="social-link"><i class="fa-brands fa-soundcloud"></i></a>
+                <a href="https://open.spotify.com/user/3133qoou7appqeou2ysv5xp5uyui?si=6ceb54c7d1674472" class="social-link"><i class="fa-brands fa-spotify"></i></a>
+                <a href="https://www.youtube.com/@Hlvtcetn" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+
+        <div class="page" id="page-illust">
+            <div class="gallery-wrapper">
+                <div class="section-intro">
+                    <h2>ILLUST</h2>
+                    <p>박물관의 장대한 캔버스에서 영감을 얻은 컬렉션 레이아웃입니다.<br>마우스를 가져가면 숨겨진 정보가 나타납니다.</p>
+                </div>
+                <div class="horizontal-scroller scroller-node">
+                    <div class="museum-card-wrapper">
+                        <div class="museum-card"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1000"></div>
+                        <div class="museum-desc"><h4>The Void Spectrum</h4><p>Digital Canvas / 2024</p></div>
+                    </div>
+                    <div class="museum-card-wrapper">
+                        <div class="museum-card"><img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1000"></div>
+                        <div class="museum-desc"><h4>Helvetica Dawn</h4><p>Mixed Media / 2025</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-music">
+            <div class="split-layout">
+                <div class="fixed-sidebar">
+                    <h2>MUSIC</h2>
+                    <p class="meta-info">BRAINSPARK THEME ARCHIVE<br>클래식 오디오 아키텍처와 마우스 휠 감도 매핑.</p>
+                    <div class="track-list-container">
+                        <div class="track-item active-track"><span>01. Brainspark Theme</span><span>04:45</span></div>
+                        <div class="track-item"><span>02. Helvetica Grid</span><span>03:12</span></div>
+                    </div>
+                </div>
+                <div class="itunes-scroller scroller-node">
+                    <div class="itunes-item"><img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=800"></div>
+                    <div class="itunes-item"><img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-sculpture">
+            <div class="split-layout">
+                <div class="fixed-sidebar">
+                    <h2>SCULPTURE</h2>
+                    <p class="meta-info">PHYSICAL GEOMETRY ARCHIVE<br>공간적 질량과 3차원적 텐션.</p>
+                    <div class="track-list-container">
+                        <div class="track-item active-track"><span>Object 01. Iron Tension</span><span>2024</span></div>
+                        <div class="track-item"><span>Object 02. Concrete Void</span><span>2024</span></div>
+                    </div>
+                </div>
+                <div class="itunes-scroller scroller-node">
+                    <div class="itunes-item"><img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=800"></div>
+                    <div class="itunes-item"><img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=800"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-store">
+            <div class="store-container">
+                <div class="store-column">
+                    <div class="column-header">CLOTHES</div>
+                    <div class="product-card">
+                        <div class="product-img-box"><img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800"></div>
+                        <div class="product-info"><span class="product-title">Helvetica Type Tee v1</span><span class="product-price">₩54,000</span></div>
+                    </div>
+                </div>
+                <div class="store-column">
+                    <div class="column-header">ACCESSORIES</div>
+                    <div class="product-card">
+                        <div class="product-img-box"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800"></div>
+                        <div class="product-info"><span class="product-title">Silver Industrial Ring</span><span class="product-price">₩85,000</span></div>
+                    </div>
+                </div>
+                <div class="store-column">
+                    <div class="column-header">ALBUM</div>
+                    <div class="product-card">
+                        <div class="product-img-box"><img src="https://images.unsplash.com/photo-1539628390774-a31f13d6662c?q=80&w=800"></div>
+                        <div class="product-info"><span class="product-title">Brainspark Limited LP</span><span class="product-price">₩48,000</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sc-modal" id="music-modal">
+        <div class="sc-modal-content">
+            <div class="close-modal-btn" id="close-modal-trigger">✕ Close Player</div>
+            <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1149451996&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const tabs = document.querySelectorAll(".corner-nav");
+            const pages = document.querySelectorAll(".page");
+            const homeBtn = document.getElementById("btn-home");
+            
+            // 페이지 전환 로직
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    const target = `page-${tab.getAttribute("data-target")}`;
+                    pages.forEach(p => p.classList.remove("active"));
+                    tabs.forEach(t => t.classList.remove("active-tab"));
+                    document.getElementById(target).classList.add("active");
+                    tab.classList.add("active-tab");
+                    homeBtn.classList.add("visible");
+                });
+            });
+
+            // 뒤로가기 버튼
+            homeBtn.addEventListener("click", () => {
+                pages.forEach(p => p.classList.remove("active"));
+                tabs.forEach(t => t.classList.remove("active-tab"));
+                document.getElementById("page-home").classList.add("active");
+                homeBtn.classList.remove("visible");
+            });
+
+            // 사운드클라우드 모달 로직
+            const modal = document.getElementById("music-modal");
+            document.getElementById("hero-music-trigger").addEventListener("click", () => modal.classList.add("visible"));
+            const closeModal = () => {
+                modal.classList.remove("visible");
+                const iframe = modal.querySelector("iframe"); iframe.src = iframe.src;
+            };
+            document.getElementById("close-modal-trigger").addEventListener("click", closeModal);
+            modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+            // 마우스 세로 휠을 가로 스크롤로 매핑
+            document.querySelectorAll(".scroller-node").forEach(scroller => {
+                scroller.addEventListener("wheel", (e) => {
+                    if (e.deltaY !== 0) { e.preventDefault(); scroller.scrollLeft += e.deltaY * 1.2; }
+                });
+            });
+        });
+    </script>
+</body>
 </html>
