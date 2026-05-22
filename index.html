@@ -53,21 +53,28 @@
         }
 
         /* ----------------------------------------------------------------
-           [3] PERSISTENT NAVIGATION (4 Corners)
+           [3] PERSISTENT NAVIGATION (4 Corners) - 이미지 탭으로 수정됨
         ---------------------------------------------------------------- */
         .corner-nav {
-            position: fixed; font-size: 13px; font-weight: 700;
-            letter-spacing: 4px; color: var(--color-dim);
-            cursor: pointer; z-index: 100; padding: 40px;
-            transition: var(--transition-smooth); text-transform: uppercase;
+            position: fixed; cursor: pointer; z-index: 100; padding: 40px;
         }
-        .corner-nav:hover { color: var(--color-text); letter-spacing: 6px; }
+        .corner-nav img {
+            width: 32px; /* 💡 아이콘 크기는 여기서 조절하세요 */
+            height: 32px;
+            object-fit: contain;
+            opacity: 0.5; /* 평소엔 반투명하게 (기존 글자색과 비슷하게) */
+            transition: var(--transition-smooth);
+        }
+        .corner-nav:hover img { 
+            opacity: 1; /* 마우스 올리면 선명하게 */
+            transform: scale(1.1); /* 살짝 커지는 효과 */
+        }
         .top-left { top: 0; left: 0; }
         .top-right { top: 0; right: 0; }
         .bottom-left { bottom: 0; left: 0; }
         .bottom-right { bottom: 0; right: 0; }
 
-        .corner-nav.active-tab { color: var(--color-text); border-bottom: 1px solid var(--color-text); padding-bottom: 5px; }
+        .corner-nav.active-tab img { opacity: 1; }
 
         /* 뒤로가기 버튼 */
         .home-btn {
@@ -179,10 +186,10 @@
 
     <div class="site-background"></div>
 
-    <div class="corner-nav top-left" data-target="music">Music</div>
-    <div class="corner-nav top-right" data-target="sculpture">Sculpture</div>
-    <div class="corner-nav bottom-left" data-target="illust">Illust</div>
-    <div class="corner-nav bottom-right" data-target="store">Store</div>
+    <div class="corner-nav top-left" data-target="music"><img src="music.png" alt="Music"></div>
+    <div class="corner-nav top-right" data-target="sculpture"><img src="sculpture.png" alt="Sculpture"></div>
+    <div class="corner-nav bottom-left" data-target="illust"><img src="illust.png" alt="Illust"></div>
+    <div class="corner-nav bottom-right" data-target="store"><img src="store.png" alt="Store"></div>
 
     <div class="home-btn" id="btn-home">Close View</div>
 
